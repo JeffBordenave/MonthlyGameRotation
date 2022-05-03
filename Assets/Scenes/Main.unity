@@ -329,6 +329,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 3198235981495583423, guid: 410ba8f144fa1624cae026e9e89bb1db, type: 3}
+  round: 4
+  nWallStart: 0
+  nWallIncrease: 9
+  baseRadius: 3
+  radiusIncrease: 5
 --- !u!4 &1024761992
 Transform:
   m_ObjectHideFlags: 0

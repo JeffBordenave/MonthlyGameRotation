@@ -22,14 +22,12 @@ public class GameManager : MonoBehaviour
 
     private void SetupLevel()
     {
-        SpawnFirstCircleOfWalls(nWallStart,baseRadius);
-
-        if (round == 1) return;
-
         for (int i = 0; i < round-1; i++)
         {
-            SpawnCircleOfWalls(nWallStart + (nWallIncrease * round), baseRadius * (radiusIncrease * round));
+            SpawnCircleOfWalls(nWallIncrease * (i + 1), radiusIncrease * (i + 1));
         }
+
+        SpawnLastCircleOfWalls(nWallIncrease * round, radiusIncrease * round);
     }
 
     private void SpawnCircleOfWalls(int nOfWall, float radius)
@@ -37,13 +35,14 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < nOfWall; i++)
         {
             float angle = i * Mathf.PI * 2f / nOfWall;
+            angle += Mathf.Deg2Rad * 0.001f;
             Vector3 newPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
 
             SpawnWall(newPos);
         }
     }
 
-    private void SpawnFirstCircleOfWalls(int nOfWall, float radius)
+    private void SpawnLastCircleOfWalls(int nOfWall, float radius)
     {
         for (int i = 1; i < nOfWall; i++)
         {

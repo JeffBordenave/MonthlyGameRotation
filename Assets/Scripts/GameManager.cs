@@ -5,25 +5,62 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject wallPrefab = default;
+    
+    public int round = 1;
+
+    public int nWallStart = 5;
+    public int nWallIncrease = 3;
+    public float baseRadius = 5;
+    public float radiusIncrease = 2;
+
+    private List<GameObject> wallList = new List<GameObject>();
 
     private void Start()
     {
-        SpawnCircleOfWalls(10, 10);
+        SetupLevel();
+    }
+
+    private void SetupLevel()
+    {
+        SpawnFirstCircleOfWalls(nWallStart,baseRadius);
+
+        if (round == 1) return;
+
+        for (int i = 0; i < round-1; i++)
+        {
+            SpawnCircleOfWalls(nWallStart + (nWallIncrease * round), baseRadius * (radiusIncrease * round));
+        }
     }
 
     private void SpawnCircleOfWalls(int nOfWall, float radius)
     {
         for (int i = 0; i < nOfWall; i++)
         {
-            Vector3 posVector = new Vector3(i * 10, 0, 0);
-            SpawnWall(posVector, Quaternion.identity);
+            float angle = i * Mathf.PI * 2f / nOfWall;
+            Vector3 newPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
+
+            SpawnWall(newPos);
         }
     }
 
-    private void SpawnWall(Vector3 position, Quaternion rotation)
+    private void SpawnFirstCircleOfWalls(int nOfWall, float radius)
+    {
+        for (int i = 1; i < nOfWall; i++)
+        {
+            float angle = i * Mathf.PI * 2f / nOfWall;
+            angle += Mathf.Deg2Rad * 90.001f;
+            Vector3 newPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
+
+            SpawnWall(newPos);
+        }
+    }
+
+    private void SpawnWall(Vector3 position)
     {
         GameObject wall = Instantiate(wallPrefab);
         wall.transform.position = position;
-        wall.transform.rotation = rotation;
+        wall.transform.LookAt(Vector3.zero);
+
+        wallList.Add(wall);
     }
 }

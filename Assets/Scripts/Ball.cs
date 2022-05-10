@@ -17,6 +17,15 @@ public class Ball : MonoBehaviour
         manager = GameManager.instance;
     }
 
+
+    private void Update()
+    {
+        if (Vector3.Distance(transform.position, Vector3.zero) > GameManager.instance.deathDistance)
+        {
+            GameManager.instance.ResetLevel();
+        }
+    }
+
     private void FixedUpdate()
     {
         rb.velocity = rb.velocity.normalized * speed;

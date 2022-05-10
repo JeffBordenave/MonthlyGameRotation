@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public GameObject wallPrefab = default;
     public GameObject container = default;
     public GameObject ballPrefab = default;
+    public GameObject targetPrefab = default;
     public GameObject camera = default;
     
     [Header("GameData")]
@@ -23,15 +24,17 @@ public class GameManager : MonoBehaviour
     [Header("CameraData")]
     public float cameraOffset;
 
+    public static GameManager instance;
+    public float deathDistance;
+
     private List<GameObject> wallList = new List<GameObject>();
     private Vector3 posToSpawBall = Vector3.zero;
-
-    public static GameManager instance;
 
     private void Start()
     {
         SetupLevel();
         instance = this;
+        deathDistance = round * radiusIncrease + ballOffset + 0.3f;
     }
 
     private void SetupLevel()
@@ -45,8 +48,30 @@ public class GameManager : MonoBehaviour
 
         SpawnLastCircleOfWalls(nWallIncrease * round, radiusIncrease * round);
 
+        deathDistance = round * radiusIncrease + ballOffset + 0.3f;
         SpawnBall(posToSpawBall);
+        SpawnTarget();
         SetCamera();
+    }
+
+    public void ResetLevel()
+    {
+        foreach (var item in wallList)
+        {
+            Destroy(item.gameObject);
+        }
+
+        Destroy(FindObjectOfType<Ball>().gameObject);
+        Destroy(FindObjectOfType<Target>().gameObject);
+
+        wallList.Clear();
+        SetupLevel();
+    }
+
+    public void Win()
+    {
+        round++;
+        ResetLevel();
     }
 
     private void SpawnCircleOfWalls(int nOfWall, float radius)
@@ -93,11 +118,16 @@ public class GameManager : MonoBehaviour
         camera.transform.position = new Vector3(0, 0, -round * cameraOffset);
     }
 
+    private void SpawnTarget()
+    {
+        GameObject target = Instantiate(targetPrefab);
+        targetPrefab.transform.position = Vector3.zero;
+    }
+
     public void BallCollision(GameObject ballHit)
     {
         if (!wallList.Contains(ballHit)) return;
 
         ballHit.SetActive(false);
-        wallList.Remove(ballHit);
     }
 }

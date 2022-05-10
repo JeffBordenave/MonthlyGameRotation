@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject ballPrefab = default;
     public GameObject targetPrefab = default;
     public GameObject camera = default;
+    public Text score = default;
     
     [Header("GameData")]
     public int round = 1;
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
         SetupLevel();
         instance = this;
         deathDistance = round * radiusIncrease + ballOffset + 0.3f;
+        score.text = "0";
     }
 
     private void SetupLevel()
@@ -52,6 +55,7 @@ public class GameManager : MonoBehaviour
         SpawnBall(posToSpawBall);
         SpawnTarget();
         SetCamera();
+        score.text = "" + (round-1);
     }
 
     public void ResetLevel()
@@ -111,6 +115,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject ball = Instantiate(ballPrefab);
         ball.transform.position = position;
+        ball.GetComponent<Ball>().speed += round * 0.1f;
     }
 
     private void SetCamera()
